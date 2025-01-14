@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.3.3] - 2025-01-14
+### Added
+- User status management feature
+  - Added ability to activate/deactivate user accounts
+  - Added middleware to prevent inactive users from accessing the system
+  - Added status checks during authentication
+  - Added visual indicators for user status in the user list
+
+### Security
+- Improved access control by preventing inactive users from logging in
+- Added automatic logout for deactivated users
+
 ## [0.3.2] - 2025-01-14
 ### Fixed
 - Fixed middleware registration in Laravel 11 by using fully qualified class names

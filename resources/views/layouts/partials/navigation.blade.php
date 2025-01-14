@@ -164,6 +164,12 @@
                             class="space-y-1 pl-6"
                         >
                             <!-- Add admin settings links here -->
+                            <a 
+                                href="{{ route('users.index') }}" 
+                                class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {{ request()->routeIs('users.index') ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}"
+                            >
+                                User Management
+                            </a>
                         </div>
                     </div>
                 </div>

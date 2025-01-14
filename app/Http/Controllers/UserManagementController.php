@@ -8,6 +8,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class UserManagementController extends Controller
 {
@@ -43,23 +44,24 @@ class UserManagementController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8|confirmed',
+            'password' => ['required', 'confirmed', Password::defaults()],
             'roles' => 'array',
+            'is_active' => 'boolean',
         ]);
 
         $user = User::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
+            'is_active' => $request->boolean('is_active', true), // Default to active
         ]);
 
-        // Assign roles
-        if (!empty($validatedData['roles'])) {
+        if (isset($validatedData['roles'])) {
             $user->syncRoles($validatedData['roles']);
         }
 
         return redirect()->route('users.index')
-            ->with('success', 'User created successfully');
+            ->with('success', 'User created successfully.');
     }
 
     /**
@@ -72,30 +74,43 @@ class UserManagementController extends Controller
     }
 
     /**
-     * Update user details
+     * Update the specified user
      */
     public function update(Request $request, User $user)
     {
-        $validatedData = $request->validate([
+        $rules = [
             'name' => 'required|string|max:255',
-            'email' => [
-                'required', 
-                'email', 
-                Rule::unique('users')->ignore($user->id)
-            ],
+            'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
             'roles' => 'array',
-        ]);
+            'is_active' => 'boolean',
+        ];
 
-        $user->update([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-        ]);
+        // Only validate password if it's provided
+        if ($request->filled('password')) {
+            $rules['password'] = ['required', 'confirmed', Password::defaults()];
+        }
 
-        // Sync roles
-        $user->syncRoles($validatedData['roles'] ?? []);
+        $validatedData = $request->validate($rules);
+
+        // Update basic info
+        $user->name = $validatedData['name'];
+        $user->email = $validatedData['email'];
+        $user->is_active = (bool) $request->input('is_active', true);
+
+        // Update password if provided
+        if ($request->filled('password')) {
+            $user->password = Hash::make($validatedData['password']);
+        }
+
+        $user->save();
+
+        // Sync roles if provided
+        if (isset($validatedData['roles'])) {
+            $user->syncRoles($validatedData['roles']);
+        }
 
         return redirect()->route('users.index')
-            ->with('success', 'User updated successfully');
+            ->with('success', 'User updated successfully.');
     }
 
     /**

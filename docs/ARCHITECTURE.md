@@ -145,6 +145,30 @@ class QuotesPermissionRegistrar implements ModulePermissionInterface
 - Implement comprehensive permission testing
 - Regularly audit permission configurations
 
+## Authentication and Authorization
+
+### User Status Management
+The system implements a user status (active/inactive) feature to control access:
+
+1. **Database Structure**
+   - Users table includes an `is_active` boolean field (default: true)
+   - Status can be toggled through the user management interface
+
+2. **Security Implementation**
+   - `EnsureUserIsActive` middleware checks user status on each request
+   - Custom Fortify authentication logic prevents inactive users from logging in
+   - Automatic logout mechanism for deactivated users
+
+3. **Components**
+   - `app/Http/Middleware/EnsureUserIsActive.php`: Main middleware for status checks
+   - `app/Http/Responses/LoginResponse.php`: Custom login response handling
+   - `app/Providers/FortifyServiceProvider.php`: Authentication customization
+
+4. **Usage**
+   - Administrators can toggle user status in the user edit form
+   - Inactive users receive clear feedback when attempting to log in
+   - Active status is required for all authenticated routes
+
 ## Scalability Considerations
 - Microservice-like module architecture
 - Centralized configuration management
