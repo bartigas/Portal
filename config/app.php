@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Facade;
+
 return [
 
     /*
@@ -105,7 +108,7 @@ return [
         ),
     ],
 
-    'providers' => [
+    'providers' => ServiceProvider::defaultProviders()->merge([
         /*
          * Package Service Providers...
          */
@@ -119,7 +122,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\PermissionServiceProvider::class,
-    ],
+    ])->toArray(),
 
     /*
     |--------------------------------------------------------------------------
