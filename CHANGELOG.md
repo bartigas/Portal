@@ -1,6 +1,25 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.3.2] - 2025-01-14
+### Fixed
+- Fixed middleware registration in Laravel 11 by using fully qualified class names
+- Resolved "Target class [role] does not exist" error in role middleware
+- Fixed user management view by switching from component-based to Blade template inheritance
+- Updated route middleware to use `RoleMiddleware::class` instead of string alias
+
+## [0.3.1] - 2025-01-14
+### Fixed
+- Resolved missing service providers issues
+- Added missing route files
+- Fixed RouteServiceProvider configuration
+- Corrected Laravel application bootstrap configuration
+
+### Added
+- Created missing EventServiceProvider
+- Created missing AuthServiceProvider
+- Created missing RouteServiceProvider
+
 ## [0.3.0] - 2025-01-14
 ### Added
 - Integrated Spatie Laravel-permission package for robust role and permission management

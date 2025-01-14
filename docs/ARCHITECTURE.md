@@ -64,6 +64,23 @@ The Portal project implements a flexible, granular permission management system 
    - Supports granular, context-specific access control
    - Enables flexible role and permission configuration
 
+#### Middleware Registration
+In Laravel 11, middleware registration requires using fully qualified class names. The Portal uses the following approach:
+
+```php
+// In routes/web.php
+use Spatie\Permission\Middleware\RoleMiddleware;
+
+Route::middleware([
+    'auth',
+    RoleMiddleware::class.':super-admin'
+])->group(function () {
+    // Protected routes
+});
+```
+
+This ensures proper middleware resolution and prevents the "Target class [role] does not exist" error that can occur with string aliases.
+
 ### Permission Hierarchy
 ```
 Portal (Global)

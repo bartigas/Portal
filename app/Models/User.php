@@ -50,18 +50,66 @@ class User extends Authenticatable
     /**
      * Assign a module-specific role to the user
      * 
-     * @param string $moduleName
-     * @param string $roleName
-     * @return void
+     * @param string $role
+     * @param string|null $module
+     * @return self
      */
-    public function assignModuleRole(string $moduleName, string $roleName)
+    public function assignModuleRole(string $role, ?string $module = null): self
     {
-        $role = Role::where('name', "{$moduleName}.{$roleName}")
-            ->where('guard_name', "module_{$moduleName}")
-            ->first();
+        $roleName = $module ? "{$module}-{$role}" : $role;
+        $this->assignRole($roleName);
+        return $this;
+    }
 
-        if ($role) {
-            $this->assignRole($role);
-        }
+    /**
+     * Check if user has a specific module role
+     * 
+     * @param string $role
+     * @param string|null $module
+     * @return bool
+     */
+    public function hasModuleRole(string $role, ?string $module = null): bool
+    {
+        $roleName = $module ? "{$module}-{$role}" : $role;
+        return $this->hasRole($roleName);
+    }
+
+    /**
+     * Get user's profile completeness
+     * 
+     * @return float
+     */
+    public function getProfileCompletenessAttribute(): float
+    {
+        $totalFields = 5; // name, email, avatar, bio, etc.
+        $completedFields = collect([
+            $this->name,
+            $this->email,
+            $this->avatar ?? null,
+            // Add more profile fields
+        ])->filter()->count();
+
+        return round(($completedFields / $totalFields) * 100, 2);
+    }
+
+    /**
+     * Scope a query to only include active users
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Determine if the user is a super admin
+     * 
+     * @return bool
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole('super-admin');
     }
 }
