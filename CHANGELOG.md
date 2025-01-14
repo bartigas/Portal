@@ -1,6 +1,22 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2025-01-14
+### Added
+- Integrated Spatie Laravel-permission package for robust role and permission management
+- Centralized permission system for Portal and modules
+- Module-specific role and permission registration
+- Comprehensive permission checking in controllers, routes, and Blade templates
+
+### Changed
+- Enhanced module architecture to support dynamic permission registration
+- Updated module development guidelines for role and permission implementation
+
+### Improvements
+- Added flexibility for module creators to define custom roles and permissions
+- Implemented granular access control mechanisms
+- Improved security and access management across the Portal ecosystem
+
 ## [0.2.0] - 2025-01-10
 ### Added
 - Unified, responsive navigation system
